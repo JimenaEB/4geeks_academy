@@ -1,4 +1,5 @@
 from flask import jsonify, url_for
+from flask_login import current_user
 
 class APIException(Exception):
     status_code = 400
@@ -31,10 +32,21 @@ def generate_sitemap(app):
                 links.append(url)
 
     links_html = "".join(["<li><a href='" + y + "'>" + y + "</a></li>" for y in links])
-    return """
+
+    if current_user.is_authenticated:
+        login_html = f"<p>Hello, {current_user.name}! You're logged in! " \
+            "Email: {current_user.email}</p>" \
+            "<div><p>Google Profile Picture:</p>" \
+            f'<img src="{current_user.profile_pic}" alt="Google profile pic"></img></div>' \
+            '<a class="button" href="/logout">Logout</a>'
+    else:
+        login_html = '<a class="button" href="/login">Google Login</a>'
+
+    return f"""
         <div style="text-align: center;">
         <img style="max-height: 80px" src='https://ucarecdn.com/3a0e7d8b-25f3-4e2f-add2-016064b04075/rigobaby.jpg' />
         <h1>Rigo welcomes you to your API!!</h1>
+        {login_html}
         <p>API HOST: <script>document.write('<input style="padding: 5px; width: 300px" type="text" value="'+window.location.href+'" />');</script></p>
         <p>Start working on your proyect by following the <a href="https://github.com/4GeeksAcademy/flask-rest-hello/blob/master/docs/_QUICK_START.md" target="_blank">Quick Start</a></p>
         <p>Remember to specify a real endpoint path like: </p>
