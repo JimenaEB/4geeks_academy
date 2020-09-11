@@ -63,31 +63,6 @@ def handle_invalid_usage(error):
 def sitemap():
     return generate_sitemap(app)
 
-@app.route('/user', methods=['GET'])
-def handle_hello():
-    user = User(email='hola@mundo.com')
-    print(user)
-    response_body = {
-        "msg": "Hello, this is your GET /user response "
-    }
-
-    return jsonify(response_body), 200
-
-@app.route('/user', methods=['POST'])
-def add_user():
-    user = User.add(email='hola@mundo.com', password='p4ssw0rd')
-
-    print(user)
-    response_body = {
-        "msg": "Hello, this is your GET /user response "
-    }
-
-    return jsonify(response_body), 200
-
-@app.route('/user/<email>', methods=['GET'])
-def handle_user_email(email):
-    return User.get_by_email(email), 200
-
 
 @app.route("/login")
 def login():
