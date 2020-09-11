@@ -1,45 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy_utils import PasswordType
 from flask_login import UserMixin
 
 db = SQLAlchemy()
-
-
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(
-        PasswordType(schemes=['pbkdf2_sha512']),
-        unique=False,
-        nullable=True,
-    )
-    is_active = db.Column(db.Boolean(), unique=False, nullable=False)
-
-    def __repr__(self):
-        return '<User %r>' % self.email
-
-    def serialize(self):
-        return {
-            "id": self.id,
-            "email": self.email,
-            # do not serialize the password, its a security breach
-        }
-
-    @classmethod
-    def add(cls, email, password):
-        user = cls(email=email, password=password, is_active=True)
-        db.session.add(user)
-        db.session.commit()
-        return user
-
-    @classmethod
-    def get(cls, user_id):
-        return cls.query.filter_by(id=user_id).one_or_none()
-
-    @classmethod 
-    def get_by_email(cls, email):
-        return cls.query.filter_by(email=email).one_or_none()
-
 
 class UserOAuth(db.Model, UserMixin):
     id = db.Column(db.String(767), primary_key=True)
